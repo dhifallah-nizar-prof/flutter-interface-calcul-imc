@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
@@ -11,6 +12,7 @@ class _HomePageState extends State<HomePage> {
   TextEditingController heightController=TextEditingController();
   final _formKey = GlobalKey<FormState>();
   Color textColor=Colors.white;
+
 
   void _resetFields(){
     _formKey.currentState?.reset();
@@ -186,9 +188,11 @@ void calculerIMC() {
               ),
             )
             ),
+            if (imc != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Votre état :", style: TextStyle(fontSize: 18,color: Colors.black26),),
+              child:
+                  Text( "Votre état :", style: TextStyle(fontSize: 18,color: Colors.black26),),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -216,6 +220,31 @@ void calculerIMC() {
     )
 
     ),
+
+            if (imc != null && imc! >=10 && imc! <=10080)
+              SleekCircularSlider(
+              min: 10,
+              max: 80,
+              initialValue: imc!.clamp(10.0, 80.0),
+              appearance: CircularSliderAppearance(
+                startAngle: 150,
+                angleRange: 240,
+                customColors: CustomSliderColors(
+                  progressBarColor: textColor,
+                  trackColor: Colors.grey.shade300,
+                ),
+              ),
+              innerWidget: (value) => Center(
+                child: Text(
+                  value.toStringAsFixed(2),
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            )
 
           ],
         ),
