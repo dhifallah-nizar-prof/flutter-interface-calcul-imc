@@ -10,11 +10,13 @@ class _HomePageState extends State<HomePage> {
   TextEditingController weightController=TextEditingController();
   TextEditingController heightController=TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  Color textColor=Colors.white;
 
   void _resetFields(){
+    _formKey.currentState?.reset();
+    weightController.clear();
+    heightController.clear();
     setState(() {
-      weightController.clear();
-      heightController.clear();
       imc = null;
       message = "";
 
@@ -30,16 +32,22 @@ void calculerIMC() {
 
   if (resultat >= 40) {
     msg = "Obésité morbide";
+    textColor=Colors.red;
   } else if (resultat >= 35) {
     msg = "Obésité sévère";
+    textColor=Colors.deepOrangeAccent;
   } else if (resultat >= 30) {
     msg = "Obésité modérée";
+    textColor=Colors.orangeAccent;
   } else if (resultat >= 25) {
     msg = "Surpoids";
+    textColor=Colors.yellow;
   } else if (resultat >= 18.5) {
     msg = "Corpulence normale";
+    textColor=Colors.green;
   } else {
     msg = "Maigreur";
+    textColor=Colors.blueAccent;
   }
 
   setState(() {
@@ -199,7 +207,8 @@ void calculerIMC() {
     Text(
      message,
     style: TextStyle(
-    color: Colors.black,
+    //color: Colors.black,
+      color: textColor,
     fontSize: 26,
     ),
     ),
