@@ -5,10 +5,46 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 class _HomePageState extends State<HomePage> {
+  String message = "";
+  double? imc;
+  TextEditingController weightController=TextEditingController();
+  TextEditingController heightController=TextEditingController();
   void _resetFields(){
     setState(() {
+      weightController.clear();
+      heightController.clear();
+      imc = null;
+      message = "";
+
     });
   }
+void calculerIMC() {
+  double poids = double.parse(weightController.text);
+  double taille = double.parse(heightController.text);
+
+  double resultat = poids / (taille * taille);
+
+  String msg;
+
+  if (resultat >= 40) {
+    msg = "Obésité morbide";
+  } else if (resultat >= 35) {
+    msg = "Obésité sévère";
+  } else if (resultat >= 30) {
+    msg = "Obésité modérée";
+  } else if (resultat >= 25) {
+    msg = "Surpoids";
+  } else if (resultat >= 18.5) {
+    msg = "Corpulence normale";
+  } else {
+    msg = "Maigreur";
+  }
+
+  setState(() {
+    imc = resultat;
+    message = msg;
+  });
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +82,9 @@ class _HomePageState extends State<HomePage> {
                           ],
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
-                        child: TextFormField(keyboardType:TextInputType.number ,textAlign:TextAlign.right,
+                        child: TextFormField(
+                            controller: weightController,
+                            keyboardType:TextInputType.number ,textAlign:TextAlign.right,
                         decoration: InputDecoration(hintText: "00.0",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("KG",
@@ -83,7 +121,9 @@ class _HomePageState extends State<HomePage> {
                           ],
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
-                        child: TextFormField(keyboardType:TextInputType.number ,textAlign:TextAlign.right,
+                        child: TextFormField(
+                            controller: heightController,
+                            keyboardType:TextInputType.number ,textAlign:TextAlign.right,
                         decoration: InputDecoration(hintText: "00.0",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("M",
@@ -102,9 +142,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Container(
               margin:EdgeInsets.fromLTRB(0, 30, 0, 20)              ,
-              child: ElevatedButton(onPressed: () {
-
-              },
+              child: ElevatedButton(onPressed: calculerIMC,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green,), child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text("Calculer",style: TextStyle(fontSize: 20,color: Colors.white),),
@@ -113,12 +151,33 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Vous êtes :", style: TextStyle(fontSize: 18,color: Colors.black26),),
+              child: Text("Votre état :", style: TextStyle(fontSize: 18,color: Colors.black26),),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text("Message",style: TextStyle(color: Colors.black,fontSize: 26),),
-            ),
+              child:
+              Column(
+                  children: [
+              if (imc != null)
+               Text(
+             "IMC : ${imc!.toStringAsFixed(2)}",
+             style: TextStyle(
+             fontSize: 24,
+            fontWeight: FontWeight.bold,
+             ),
+           ),
+         SizedBox(height: 10),
+    Text(
+     message,
+    style: TextStyle(
+    color: Colors.black,
+    fontSize: 26,
+    ),
+    ),
+    ],
+    )
+
+    ),
 
           ],
         ),
