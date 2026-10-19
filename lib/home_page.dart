@@ -9,6 +9,8 @@ class _HomePageState extends State<HomePage> {
   double? imc;
   TextEditingController weightController=TextEditingController();
   TextEditingController heightController=TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   void _resetFields(){
     setState(() {
       weightController.clear();
@@ -59,8 +61,9 @@ void calculerIMC() {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 0.0),
-        child: Form(child:
-        Column(
+        child: Form(
+          key: _formKey,
+          child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -84,7 +87,17 @@ void calculerIMC() {
                         ),
                         child: TextFormField(
                             controller: weightController,
-                            keyboardType:TextInputType.number ,textAlign:TextAlign.right,
+                            keyboardType:TextInputType.number ,
+                            validator: (value) {
+                              if (value == null || value.isEmpty){
+                                return "Veuillez saisir votre poids";
+                              }
+                              if (double.tryParse(value)==null) {
+                                return "Nombre invalide";
+                              }
+                              return null;
+                            },
+                            textAlign:TextAlign.right,
                         decoration: InputDecoration(hintText: "00.0",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("KG",
@@ -123,7 +136,18 @@ void calculerIMC() {
                         ),
                         child: TextFormField(
                             controller: heightController,
-                            keyboardType:TextInputType.number ,textAlign:TextAlign.right,
+                            keyboardType:TextInputType.number ,
+                            validator: (value) {
+                              if (value == null || value.isEmpty){
+                                return "Veuillez saisir votre taille";
+                              }
+                              if (double.tryParse(value)==null) {
+                                return "Nombre invalide";
+                              }
+                              return null;
+                            },
+
+                            textAlign:TextAlign.right,
                         decoration: InputDecoration(hintText: "00.0",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("M",
@@ -142,7 +166,12 @@ void calculerIMC() {
             ),
             Container(
               margin:EdgeInsets.fromLTRB(0, 30, 0, 20)              ,
-              child: ElevatedButton(onPressed: calculerIMC,
+              child: ElevatedButton(onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      calculerIMC();
+                    }
+              }
+              ,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green,), child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text("Calculer",style: TextStyle(fontSize: 20,color: Colors.white),),
