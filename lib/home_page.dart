@@ -99,16 +99,20 @@ void calculerIMC() {
                             controller: weightController,
                             keyboardType:TextInputType.number ,
                             validator: (value) {
-                              if (value == null || value.isEmpty){
+                              if (value == null || value.isEmpty) {
                                 return "Veuillez saisir votre poids";
                               }
-                              if (double.tryParse(value)==null) {
+                              double? poids = double.tryParse(value);
+                              if (poids == null) {
                                 return "Nombre invalide";
+                              }
+                              if (poids < 20 || poids > 300) {
+                                return "Le poids doit être compris entre 20 et 300 kg";
                               }
                               return null;
                             },
                             textAlign:TextAlign.right,
-                        decoration: InputDecoration(hintText: "00.0",
+                        decoration: InputDecoration(hintText: "Exp: 70.0",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("KG",
                           style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Colors.green),
@@ -148,17 +152,22 @@ void calculerIMC() {
                             controller: heightController,
                             keyboardType:TextInputType.number ,
                             validator: (value) {
-                              if (value == null || value.isEmpty){
-                                return "Veuillez saisir votre taille";
+                              if (value == null || value.isEmpty) {
+                               return "Veuillez saisir votre taille";
                               }
-                              if (double.tryParse(value)==null) {
-                                return "Nombre invalide";
-                              }
+                              double? taille = double.tryParse(value);
+                              if (taille == null) {
+                               return "Nombre invalide";
+                               }
+                               if (taille < 1.0 || taille > 2.5) {
+                               return "La taille doit être comprise entre 1 et 2,5 m";
+                               }
                               return null;
+
                             },
 
                             textAlign:TextAlign.right,
-                        decoration: InputDecoration(hintText: "00.0",
+                        decoration: InputDecoration(hintText: "Exp: 1.75",
                           hintStyle: TextStyle(color: Colors.black26, fontSize: 20),
                           suffixIcon: Text("M",
                           style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Colors.green),
