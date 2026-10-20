@@ -6,57 +6,69 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 class _HomePageState extends State<HomePage> {
-  String message = "";
-  double? imc;
-  TextEditingController weightController=TextEditingController();
-  TextEditingController heightController=TextEditingController();
+  //variables
+  String _message  = "";
+  double? _imc;
+  Color _textColor=Colors.white;
+  final TextEditingController _weightController=TextEditingController();
+  final TextEditingController _heightController=TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  Color textColor=Colors.white;
 
+// Cycle de vie
+  @override
+  void dispose() {
+    _weightController.dispose();
+    _heightController.dispose();
+    super.dispose();
+  }
 
+  // Méthodes privées
   void _resetFields(){
     _formKey.currentState?.reset();
-    weightController.clear();
-    heightController.clear();
+    _weightController.clear();
+    _heightController.clear();
     setState(() {
-      imc = null;
-      message = "";
+      _imc = null;
+      _message = "";
+      _textColor = Colors.white;
 
     });
   }
-void calculerIMC() {
-  double poids = double.parse(weightController.text);
-  double taille = double.parse(heightController.text);
+void _calculerIMC() {
+  double poids = double.parse(_weightController.text);
+  double taille = double.parse(_heightController.text);
 
   double resultat = poids / (taille * taille);
 
   String msg;
-
+  Color couleur;
   if (resultat >= 40) {
     msg = "Obésité morbide";
-    textColor=Colors.red;
+    couleur=Colors.red;
   } else if (resultat >= 35) {
     msg = "Obésité sévère";
-    textColor=Colors.deepOrangeAccent;
+    couleur=Colors.deepOrangeAccent;
   } else if (resultat >= 30) {
     msg = "Obésité modérée";
-    textColor=Colors.orangeAccent;
+    couleur=Colors.orangeAccent;
   } else if (resultat >= 25) {
     msg = "Surpoids";
-    textColor=Colors.yellow;
+    couleur=Colors.yellow;
   } else if (resultat >= 18.5) {
     msg = "Corpulence normale";
-    textColor=Colors.green;
+    couleur=Colors.green;
   } else {
     msg = "Maigreur";
-    textColor=Colors.blueAccent;
+    couleur=Colors.blueAccent;
   }
 
   setState(() {
-    imc = resultat;
-    message = msg;
+    _imc = resultat;
+    _message = msg;
+    _textColor=couleur;
   });
 }
+// Interface
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +108,7 @@ void calculerIMC() {
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
                         child: TextFormField(
-                            controller: weightController,
+                            controller: _weightController,
                             keyboardType:TextInputType.number ,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -149,7 +161,7 @@ void calculerIMC() {
                           borderRadius: BorderRadius.all(Radius.circular(50.0)),
                         ),
                         child: TextFormField(
-                            controller: heightController,
+                            controller: _heightController,
                             keyboardType:TextInputType.number ,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -187,7 +199,7 @@ void calculerIMC() {
               margin:EdgeInsets.fromLTRB(0, 30, 0, 20)              ,
               child: ElevatedButton(onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      calculerIMC();
+                      _calculerIMC();
                     }
               }
               ,
@@ -197,7 +209,7 @@ void calculerIMC() {
               ),
             )
             ),
-            if (imc != null)
+            if (_imc != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child:
@@ -208,9 +220,9 @@ void calculerIMC() {
               child:
               Column(
                   children: [
-              if (imc != null)
+              if (_imc != null)
                Text(
-             "IMC : ${imc!.toStringAsFixed(2)}",
+             "IMC : ${_imc!.toStringAsFixed(2)}",
              style: TextStyle(
              fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -218,10 +230,10 @@ void calculerIMC() {
            ),
          SizedBox(height: 10),
     Text(
-     message,
+     _message ,
     style: TextStyle(
     //color: Colors.black,
-      color: textColor,
+      color: _textColor,
     fontSize: 26,
     ),
     ),
@@ -230,26 +242,26 @@ void calculerIMC() {
 
     ),
 
-            if (imc != null && imc! >=10 && imc! <=10080)
+            if (_imc != null && _imc! >=10 && _imc! <=80)
               SleekCircularSlider(
               min: 10,
               max: 80,
-              initialValue: imc!.clamp(10.0, 80.0),
+              initialValue: _imc!.clamp(10.0, 80.0),
               appearance: CircularSliderAppearance(
                 startAngle: 150,
                 angleRange: 240,
                 customColors: CustomSliderColors(
-                  progressBarColor: textColor,
+                  progressBarColor: _textColor,
                   trackColor: Colors.grey.shade300,
                 ),
               ),
               innerWidget: (value) => Center(
                 child: Text(
-                  value.toStringAsFixed(2),
+                  _imc!.toStringAsFixed(2),
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
-                    color: textColor,
+                    color: _textColor,
                   ),
                 ),
               ),
